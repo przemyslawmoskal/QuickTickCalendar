@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<resources>
+    <string name="app_name">QuickTickCalendar</string>
+    <string name="task_description">Task description</string>
+    <string name="task_title">Task Title</string>
+    <string name="day_view">Current day</string>
+    <string name="week_view">Current week</string>
+    <string name="year_view">Current year</string>
+    <string name="add_task">Add task</string>
+    <string name="new_task">Add new task:</string>
+    <string name="task_title_label">Task title:</string>
+    <string name="task_description_label">Task description</string>
+    <string name="task_date_label">Choose date:</string>
+    <string name="task_title_hint">Enter short task title here</string>
+    <string name="task_description_hint">Enter task description here</string>
+    <string name="choose_date_label">Choose date:</string>
+    <string name="ok_button">OK</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="date_above_recycler_view">%s</string>
+    <string name="date_format">yyyy-MM-dd</string>
+    <string name="today">TODAY</string>
+    <string name="yesterday">YESTERDAY</string>
+    <string name="day_before_yesterday">DAY BEFORE YESTERDAY</string>
+    <string name="tomorrow">TOMORROW</string>
+    <string name="day_after_tomorrow">DAY AFTER TOMORROW</string>
+    <string name="set_alarm">Set alarm...</string>
+    <string name="set_location">Set location...</string>
+    <string name="add_details">Show more details</string>
+    <string name="set_date">Choose date:</string>
+</resources>
