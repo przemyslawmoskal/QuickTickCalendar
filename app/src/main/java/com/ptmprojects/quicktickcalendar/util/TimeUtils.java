@@ -2,12 +2,12 @@ package com.ptmprojects.quicktickcalendar.util;
 
 import android.content.Context;
 
+import com.ptmprojects.quicktickcalendar.R;
+
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
-import com.ptmprojects.quicktickcalendar.R;
 
 public class TimeUtils {
 
@@ -23,6 +23,7 @@ public class TimeUtils {
         // check if this number of days is OK:
         DAYS_OF_TIME = 73413;
     }
+
     /**
      * Get the position in the ViewPager for a given day
      *
@@ -63,12 +64,6 @@ public class TimeUtils {
             pattern = defaultPattern;
         }
         DateTimeFormatter mDateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
-//        try {
-//            simpleDateFormat = new Date new SimpleDateFormat(pattern);
-//        } catch (IllegalArgumentException e) {
-//            simpleDateFormat = new SimpleDateFormat(defaultPattern);
-//        }
-
         return mDateTimeFormatter.print(date);
     }
 

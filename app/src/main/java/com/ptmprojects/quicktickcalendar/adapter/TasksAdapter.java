@@ -8,19 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.ptmprojects.quicktickcalendar.MainActivity;
+import com.ptmprojects.quicktickcalendar.R;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.w3c.dom.Text;
-
-import com.ptmprojects.quicktickcalendar.AllTasksByDateActivity;
-import com.ptmprojects.quicktickcalendar.MainActivity;
-import com.ptmprojects.quicktickcalendar.R;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

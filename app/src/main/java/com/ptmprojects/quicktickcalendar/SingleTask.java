@@ -14,10 +14,14 @@ public class SingleTask {
     private String mLocationDetails;
 
     public SingleTask(LocalDate date, String title, boolean isDone) {
+        this(UUID.randomUUID());
         mDate = date;
         mTitle = title;
         mIsDone = isDone;
-        mId = UUID.randomUUID();
+    }
+
+    public SingleTask(UUID id) {
+        mId = id;
     }
 
     public LocalDate getDate() {

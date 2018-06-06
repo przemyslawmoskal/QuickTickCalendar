@@ -19,7 +19,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class AddNewTaskDialog extends DialogFragment {
-//    private DatePicker mDatePicker;
     private EditText mTitleEditText;
     private EditText mDescriptionEditText;
     private Button mDateButton;
@@ -34,14 +33,11 @@ public class AddNewTaskDialog extends DialogFragment {
     private static final int REQUEST_DATE_FROM_DATE_PICKER = 0;
     DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
 
-//    TasksBank bank = TasksBank.get(getActivity());
-
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.add_new_task_dialog, null);
-//        mDatePicker = (DatePicker) v.findViewById(R.id.dialog_date_picker);
         mTitleEditText = (EditText) v.findViewById(R.id.task_title_edit_text);
         mDescriptionEditText = (EditText) v.findViewById(R.id.task_description_edit_text);
         mDateButton = (Button) v.findViewById(R.id.set_date_button);
@@ -58,8 +54,6 @@ public class AddNewTaskDialog extends DialogFragment {
         });
         mAlarmButton = (Button) v.findViewById(R.id.set_alarm_button);
         mLocationButton = (Button) v.findViewById(R.id.set_location_button);
-
-
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 

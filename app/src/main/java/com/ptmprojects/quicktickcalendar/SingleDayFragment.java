@@ -34,7 +34,6 @@ public class SingleDayFragment extends Fragment {
     private RecyclerView mTaskRecyclerView;
     private TaskAdapter mAdapter;
     private LocalDate date;
-//    DateTimeFormatter mDateTimeFormatter = DateTimeFormat.forPattern("dd MMMM yyyy");
 
     public static SingleDayFragment newInstance(LocalDate date) {
         SingleDayFragment fragmentFirst = new SingleDayFragment();
@@ -61,7 +60,6 @@ public class SingleDayFragment extends Fragment {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_single_day, container, false);
         mTaskRecyclerView = (RecyclerView) view.findViewById(R.id.single_day_recycler_view);
         mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        mTaskRecyclerView.setNestedScrollingEnabled(true);
 
         updateUI();
         return view;
@@ -79,7 +77,7 @@ public class SingleDayFragment extends Fragment {
         super.onResume();
         Log.i(TAG, "SingleDayFragment.onResume()");
         TasksBank tasksBank;
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             tasksBank = TasksBank.get(getActivity());
             List<SingleTask> tasksForSingleDay = tasksBank.getTasksForDate(date);
             if (mAdapter == null) {
@@ -109,7 +107,8 @@ public class SingleDayFragment extends Fragment {
                 startActivity(i);
                 return true;
             }
-            default: super.onOptionsItemSelected(item);
+            default:
+                super.onOptionsItemSelected(item);
         }
         return false;
     }
@@ -138,8 +137,9 @@ public class SingleDayFragment extends Fragment {
                     .show();
 
             mTaskRecyclerView.getAdapter().notifyDataSetChanged();
-            updateUI();;
-            ((MainActivity)getActivity()).getVpPager().getAdapter().notifyDataSetChanged();
+            updateUI();
+            ;
+            ((MainActivity) getActivity()).getVpPager().getAdapter().notifyDataSetChanged();
             mTaskRecyclerView.invalidate();
         }
     }
@@ -227,29 +227,22 @@ public class SingleDayFragment extends Fragment {
                     }
                 }
             });
-           // mDescriptionTextView.setText(mSingleTask.getDescription());
+
             mIsCompletedCheckBox.setChecked(task.isDone());
             mDeleteButton.setOnClickListener((a) -> {
                 TasksBank.get(getContext()).deleteTask(task);
                 mTaskRecyclerView.getAdapter().notifyDataSetChanged();
                 updateUI();
             });
-            //!!!!!!!! wyjeżdżanie po naciśnięciu przycisku
-//            mDescriptionTextView.setOnClickListener(new View.OnClickListener() {
-//
-//                @Override
-//                public void onClick(View v) {
-//
-//                }
-//            });
-            if(((task.getDescription() != null) && (!"".equals(task.getDescription())))
+
+            if (((task.getDescription() != null) && (!"".equals(task.getDescription())))
                     && ((task.getLocationDetails() != null) && (!"".equals(task.getLocationDetails())))
                     && ((task.getAlarmDetails() != null) && (!"".equals(task.getAlarmDetails())))) {
                 mAddDetailsWholeLayout.setVisibility(View.GONE);
             } else {
                 mAddDetailsWholeLayout.setVisibility(View.VISIBLE);
             }
-            if(task.getDescription() != null && !"".equals(task.getAlarmDetails())) {
+            if (task.getDescription() != null && !"".equals(task.getAlarmDetails())) {
                 mSetDescriptionWholeLayout.setVisibility(View.VISIBLE);
                 mDescriptionDetails.setText(task.getDescription());
             } else {
@@ -260,12 +253,12 @@ public class SingleDayFragment extends Fragment {
             mDescriptionDetails.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if(!hasFocus) {
+                    if (!hasFocus) {
                         task.setDescription(mDescriptionDetails.getText().toString());
                     }
                 }
             });
-            if(task.getLocationDetails() != null && !"".equals(task.getLocationDetails())) {
+            if (task.getLocationDetails() != null && !"".equals(task.getLocationDetails())) {
                 mSetLocationWholeLayout.setVisibility(View.VISIBLE);
                 mLocationDetails.setText(task.getLocationDetails());
             } else {
@@ -276,12 +269,12 @@ public class SingleDayFragment extends Fragment {
             mLocationDetails.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if(!hasFocus) {
+                    if (!hasFocus) {
                         task.setLocationDetails(mLocationDetails.getText().toString());
                     }
                 }
             });
-            if(task.getAlarmDetails() != null && !"".equals(task.getAlarmDetails())) {
+            if (task.getAlarmDetails() != null && !"".equals(task.getAlarmDetails())) {
                 mSetAlarmWholeLayout.setVisibility(View.VISIBLE);
                 mAlarmDetails.setText(task.getAlarmDetails());
             } else {
@@ -292,7 +285,7 @@ public class SingleDayFragment extends Fragment {
             mAlarmDetails.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if(!hasFocus) {
+                    if (!hasFocus) {
                         task.setAlarmDetails(mAlarmDetails.getText().toString());
                     }
                 }
@@ -317,6 +310,7 @@ public class SingleDayFragment extends Fragment {
 
         private int mExpandedPosition;
         int previousExpandedPosition = -1;
+
         public TaskAdapter(List<SingleTask> tasks) {
             mTasks = tasks;
         }
@@ -330,8 +324,8 @@ public class SingleDayFragment extends Fragment {
         @Override
         public void onBindViewHolder(TaskHolder holder, int position) {
             SingleTask task = mTasks.get(position);
-            holder.mIsCompletedCheckBox.setOnCheckedChangeListener((a,b) -> {
-                if(b == true) {
+            holder.mIsCompletedCheckBox.setOnCheckedChangeListener((a, b) -> {
+                if (b == true) {
                     mTasks.get(position).setDone(true);
                     holder.mIsCompletedCheckBox.setChecked(true);
                 } else {
@@ -339,8 +333,8 @@ public class SingleDayFragment extends Fragment {
                     holder.mIsCompletedCheckBox.setChecked(false);
                 }
             });
-            final boolean isExpanded = position==mExpandedPosition;
-            holder.details.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+            final boolean isExpanded = position == mExpandedPosition;
+            holder.details.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             holder.itemView.setActivated(isExpanded);
             // If I want to expand only one element at a time, I should use these 3 lines:
 //            if (isExpanded) {
@@ -353,15 +347,11 @@ public class SingleDayFragment extends Fragment {
                 holder.mDeleteButton.setVisibility(View.GONE);
             }
 
-
-            // wyjeżdżanie podmenu po naciśnięciu strzałeczki ?
             holder.mDescriptionTextView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    mExpandedPosition = isExpanded ? -1:position;
-                    // without notifyDataSetChanged added element doesn't expands
-//                   notifyDataSetChanged();
+                    mExpandedPosition = isExpanded ? -1 : position;
                     notifyItemChanged(previousExpandedPosition);
                     notifyItemChanged(position);
                 }
