@@ -124,8 +124,10 @@ public class SingleDayFragment extends Fragment {
             LocalDate date = (LocalDate) data.getSerializableExtra(AddNewTaskDialog.EXTRA_DATE);
             String title = (String) data.getSerializableExtra(AddNewTaskDialog.EXTRA_TITLE);
             String description = (String) data.getSerializableExtra(AddNewTaskDialog.EXTRA_DESCRIPTION);
+            String alarmString = (String) data.getSerializableExtra(AddNewTaskDialog.EXTRA_ALARM);
             SingleTask newTask = new SingleTask(date, title, false);
             newTask.setDescription(description);
+            newTask.setAlarmDetails(alarmString);
             TasksBank.get(getContext()).addTask(newTask);
             int size;
             if (TasksBank.get(getActivity()).getTasksForDate(date) == null) {

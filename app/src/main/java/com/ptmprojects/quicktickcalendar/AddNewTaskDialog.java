@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -30,8 +31,12 @@ public class AddNewTaskDialog extends DialogFragment {
     public static final String EXTRA_ALARM = "ptmprojects.com.quicktickcalendar.alarm";
     public static final String EXTRA_LOCATION = "ptmprojects.com.quicktickcalendar.location";
     private static final String DATE_PICKER_DIALOG = "DatePickerDialog";
+    private static final String DATE_AND_TIME_PICKER_DIALOG = "DateAndTimePickerDialog";
     private static final int REQUEST_DATE_FROM_DATE_PICKER = 0;
+    private static final int REQUEST_DATE_AND_TIME_FROM_DATE_AND_TIME_PICKER = 1;
+
     DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
+    DateTimeFormatter formatterForDateAndTime = DateTimeFormat.forPattern("YYYY-MM-dd', 'HH':'mm");
 
     @NonNull
     @Override
@@ -53,6 +58,20 @@ public class AddNewTaskDialog extends DialogFragment {
             }
         });
         mAlarmButton = (Button) v.findViewById(R.id.set_alarm_button);
+        mAlarmButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                FragmentManager manager = getFragmentManager();
+                DateAndTimePickerForAlarmFragment dialog = DateAndTimePickerForAlarmFragment
+                        .newInstance(new LocalDateTime());
+                dialog.setTargetFragment(AddNewTaskDialog.this, REQUEST_DATE_AND_TIME_FROM_DATE_AND_TIME_PICKER);
+                dialog.show(manager, DATE_AND_TIME_PICKER_DIALOG);
+            }
+        });
+
+
+
         mLocationButton = (Button) v.findViewById(R.id.set_location_button);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -93,6 +112,10 @@ public class AddNewTaskDialog extends DialogFragment {
         if (requestCode == REQUEST_DATE_FROM_DATE_PICKER) {
             LocalDate date = (LocalDate) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE_FROM_DATE_PICKER);
             mDateButton.setText(formatter.print(date));
+        }
+        if (requestCode == REQUEST_DATE_AND_TIME_FROM_DATE_AND_TIME_PICKER) {
+            LocalDateTime dateTime = (LocalDateTime) data.getSerializableExtra(DateAndTimePickerForAlarmFragment.EXTRA_DATE_AND_TIME_FROM_DIALOG_FOR_ALARM);
+            mAlarmButton.setText(formatterForDateAndTime.print(dateTime));
         }
     }
 
