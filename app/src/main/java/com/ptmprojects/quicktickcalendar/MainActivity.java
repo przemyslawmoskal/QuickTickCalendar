@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        @NonNull
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             Object obj = super.instantiateItem(container, position);

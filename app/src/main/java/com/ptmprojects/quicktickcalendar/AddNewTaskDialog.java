@@ -3,7 +3,6 @@ package com.ptmprojects.quicktickcalendar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -46,28 +45,20 @@ public class AddNewTaskDialog extends DialogFragment {
         mTitleEditText = (EditText) v.findViewById(R.id.task_title_edit_text);
         mDescriptionEditText = (EditText) v.findViewById(R.id.task_description_edit_text);
         mDateButton = (Button) v.findViewById(R.id.set_date_button);
-        mDateButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                FragmentManager manager = getFragmentManager();
-                DatePickerFragment dialog = DatePickerFragment
-                        .newInstance(new LocalDate());
-                dialog.setTargetFragment(AddNewTaskDialog.this, REQUEST_DATE_FROM_DATE_PICKER);
-                dialog.show(manager, DATE_PICKER_DIALOG);
-            }
+        mDateButton.setOnClickListener(v1 -> {
+            FragmentManager manager = getFragmentManager();
+            DatePickerFragment dialog = DatePickerFragment
+                    .newInstance(new LocalDate());
+            dialog.setTargetFragment(AddNewTaskDialog.this, REQUEST_DATE_FROM_DATE_PICKER);
+            dialog.show(manager, DATE_PICKER_DIALOG);
         });
         mAlarmButton = (Button) v.findViewById(R.id.set_alarm_button);
-        mAlarmButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                FragmentManager manager = getFragmentManager();
-                DateAndTimePickerForAlarmFragment dialog = DateAndTimePickerForAlarmFragment
-                        .newInstance(new LocalDateTime());
-                dialog.setTargetFragment(AddNewTaskDialog.this, REQUEST_DATE_AND_TIME_FROM_DATE_AND_TIME_PICKER);
-                dialog.show(manager, DATE_AND_TIME_PICKER_DIALOG);
-            }
+        mAlarmButton.setOnClickListener(v12 -> {
+            FragmentManager manager = getFragmentManager();
+            DateAndTimePickerForAlarmFragment dialog = DateAndTimePickerForAlarmFragment
+                    .newInstance(new LocalDateTime());
+            dialog.setTargetFragment(AddNewTaskDialog.this, REQUEST_DATE_AND_TIME_FROM_DATE_AND_TIME_PICKER);
+            dialog.show(manager, DATE_AND_TIME_PICKER_DIALOG);
         });
 
 
@@ -80,25 +71,20 @@ public class AddNewTaskDialog extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(v)
                 // Add action buttons
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        String title = mTitleEditText.getText().toString();
-                        String description = mDescriptionEditText.getText().toString();
-                        LocalDate date = formatter.parseLocalDate(mDateButton.getText().toString());
-                        String alarm = mAlarmButton.getText().toString();
-                        String location = mLocationButton.getText().toString();
-                        sendResult(Activity.RESULT_OK, date,
-                                title,
-                                description,
-                                alarm,
-                                location);
-                    }
+                .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                    String title = mTitleEditText.getText().toString();
+                    String description = mDescriptionEditText.getText().toString();
+                    LocalDate date = formatter.parseLocalDate(mDateButton.getText().toString());
+                    String alarm = mAlarmButton.getText().toString();
+                    String location = mLocationButton.getText().toString();
+                    sendResult(Activity.RESULT_OK, date,
+                            title,
+                            description,
+                            alarm,
+                            location);
                 })
-                .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                .setNegativeButton(R.string.cancel_button, (dialog, id) -> {
 //                        LoginDialogFragment.this.getDialog().cancel();
-                    }
                 });
 
         return builder.create();

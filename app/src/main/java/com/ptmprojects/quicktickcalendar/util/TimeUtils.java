@@ -63,7 +63,7 @@ public class TimeUtils {
         if (pattern == null) {
             pattern = defaultPattern;
         }
-        DateTimeFormatter mDateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+        DateTimeFormatter mDateTimeFormatter = DateTimeFormat.forPattern(pattern);
         return mDateTimeFormatter.print(date);
     }
 

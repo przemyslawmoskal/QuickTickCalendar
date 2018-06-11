@@ -2,7 +2,6 @@ package com.ptmprojects.quicktickcalendar;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -49,16 +48,13 @@ public class DatePickerFragment extends DialogFragment {
                 .setView(v)
                 .setTitle(R.string.choose_date_label)
                 .setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                int year = mDatePicker.getYear();
-                                int month = mDatePicker.getMonth();
-                                int day = mDatePicker.getDayOfMonth();
-                                Date date = new GregorianCalendar(year, month, day).getTime();
-                                LocalDate localDate = LocalDate.fromDateFields(date);
-                                sendResult(Activity.RESULT_OK, localDate);
-                            }
+                        (dialog, which) -> {
+                            int year1 = mDatePicker.getYear();
+                            int month1 = mDatePicker.getMonth();
+                            int day1 = mDatePicker.getDayOfMonth();
+                            Date date1 = new GregorianCalendar(year1, month1, day1).getTime();
+                            LocalDate localDate = LocalDate.fromDateFields(date1);
+                            sendResult(Activity.RESULT_OK, localDate);
                         })
                 .create();
     }

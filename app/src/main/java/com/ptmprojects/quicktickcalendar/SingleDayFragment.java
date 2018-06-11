@@ -3,6 +3,7 @@ package com.ptmprojects.quicktickcalendar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -55,7 +56,7 @@ public class SingleDayFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, "SingleDayFragment.onCreateView()");
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_single_day, container, false);
         mTaskRecyclerView = (RecyclerView) view.findViewById(R.id.single_day_recycler_view);
@@ -221,12 +222,9 @@ public class SingleDayFragment extends Fragment {
         public void bind(SingleTask task) {
             mSingleTask = task;
             mTitleTextView.setText(task.getTitle());
-            mTitleTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        task.setTitle(mTitleTextView.getText().toString());
-                    }
+            mTitleTextView.setOnFocusChangeListener((v, hasFocus) -> {
+                if (!hasFocus) {
+                    task.setTitle(mTitleTextView.getText().toString());
                 }
             });
 
@@ -252,12 +250,9 @@ public class SingleDayFragment extends Fragment {
                 task.setDescription(null);
                 mSetDescriptionWholeLayout.setVisibility(View.GONE);
             }
-            mDescriptionDetails.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        task.setDescription(mDescriptionDetails.getText().toString());
-                    }
+            mDescriptionDetails.setOnFocusChangeListener((v, hasFocus) -> {
+                if (!hasFocus) {
+                    task.setDescription(mDescriptionDetails.getText().toString());
                 }
             });
             if (task.getLocationDetails() != null && !"".equals(task.getLocationDetails())) {
@@ -268,12 +263,9 @@ public class SingleDayFragment extends Fragment {
                 task.setLocationDetails(null);
                 mSetLocationWholeLayout.setVisibility(View.GONE);
             }
-            mLocationDetails.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        task.setLocationDetails(mLocationDetails.getText().toString());
-                    }
+            mLocationDetails.setOnFocusChangeListener((v, hasFocus) -> {
+                if (!hasFocus) {
+                    task.setLocationDetails(mLocationDetails.getText().toString());
                 }
             });
             if (task.getAlarmDetails() != null && !"".equals(task.getAlarmDetails())) {
@@ -284,25 +276,18 @@ public class SingleDayFragment extends Fragment {
                 task.setAlarmDetails(null);
                 mSetAlarmWholeLayout.setVisibility(View.GONE);
             }
-            mAlarmDetails.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        task.setAlarmDetails(mAlarmDetails.getText().toString());
-                    }
+            mAlarmDetails.setOnFocusChangeListener((v, hasFocus) -> {
+                if (!hasFocus) {
+                    task.setAlarmDetails(mAlarmDetails.getText().toString());
                 }
             });
 
-            mAddDetailsButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    mSetDescriptionWholeLayout.setVisibility(View.VISIBLE);
-                    mSetLocationWholeLayout.setVisibility(View.VISIBLE);
-                    mSetAlarmWholeLayout.setVisibility(View.VISIBLE);
-                    // Add details button disappears when all details shown:
-                    mAddDetailsWholeLayout.setVisibility(View.GONE);
-                }
+            mAddDetailsButton.setOnClickListener(v -> {
+                mSetDescriptionWholeLayout.setVisibility(View.VISIBLE);
+                mSetLocationWholeLayout.setVisibility(View.VISIBLE);
+                mSetAlarmWholeLayout.setVisibility(View.VISIBLE);
+                // Add details button disappears when all details shown:
+                mAddDetailsWholeLayout.setVisibility(View.GONE);
             });
         }
     }
@@ -317,17 +302,18 @@ public class SingleDayFragment extends Fragment {
             mTasks = tasks;
         }
 
+        @NonNull
         @Override
-        public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             return new TaskHolder(layoutInflater, parent);
         }
 
         @Override
-        public void onBindViewHolder(TaskHolder holder, int position) {
+        public void onBindViewHolder(@NonNull TaskHolder holder, int position) {
             SingleTask task = mTasks.get(position);
             holder.mIsCompletedCheckBox.setOnCheckedChangeListener((a, b) -> {
-                if (b == true) {
+                if (b) {
                     mTasks.get(position).setDone(true);
                     holder.mIsCompletedCheckBox.setChecked(true);
                 } else {
@@ -349,14 +335,10 @@ public class SingleDayFragment extends Fragment {
                 holder.mDeleteButton.setVisibility(View.GONE);
             }
 
-            holder.mDescriptionTextView.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    mExpandedPosition = isExpanded ? -1 : position;
-                    notifyItemChanged(previousExpandedPosition);
-                    notifyItemChanged(position);
-                }
+            holder.mDescriptionTextView.setOnClickListener(v -> {
+                mExpandedPosition = isExpanded ? -1 : position;
+                notifyItemChanged(previousExpandedPosition);
+                notifyItemChanged(position);
             });
             holder.bind(task);
         }

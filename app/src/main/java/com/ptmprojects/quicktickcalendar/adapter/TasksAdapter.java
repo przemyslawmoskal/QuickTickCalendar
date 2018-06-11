@@ -55,6 +55,7 @@ public class TasksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.items = items;
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -73,7 +74,7 @@ public class TasksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         int viewType = getItemViewType(position);
         switch (viewType) {
             case ListItem.TYPE_HEADER: {
@@ -82,15 +83,12 @@ public class TasksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 // your logic here
 //                holder.txt_header.setText(DateUtils.formatDate(header.getDate()));
                 holder.txt_header.setText(header.getDate().toString(mDateTimeFormatter));
-                holder.txt_header.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LocalDate date = header.getDate();
-                        String dateString = date.toString("yyyy-MM-dd");
-                                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                                intent.putExtra(MainActivity.DATE_AT_SHOW_UP, dateString);
-                                v.getContext().startActivity(intent);
-                    }
+                holder.txt_header.setOnClickListener(v -> {
+                    LocalDate date = header.getDate();
+                    String dateString = date.toString("yyyy-MM-dd");
+                    Intent intent = new Intent(v.getContext(), MainActivity.class);
+                    intent.putExtra(MainActivity.DATE_AT_SHOW_UP, dateString);
+                    v.getContext().startActivity(intent);
                 });
                 break;
             }

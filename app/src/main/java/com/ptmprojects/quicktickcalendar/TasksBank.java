@@ -75,16 +75,13 @@ public class TasksBank {
     public ArrayList<SingleTask> getTasksForDate(LocalDate date) {
         ArrayList<SingleTask> tasksForDate = new ArrayList<>();
 
-        SingleTaskCursorWrapper cursor = queryTasks(SingleTaskDbSchema.SingleTaskTable.Cols.DATE + " = ?",
-                new String[]{date.toString()});
-        try {
+        try (SingleTaskCursorWrapper cursor = queryTasks(SingleTaskDbSchema.SingleTaskTable.Cols.DATE + " = ?",
+                new String[]{date.toString()})) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 tasksForDate.add(cursor.getSingleTask());
                 cursor.moveToNext();
             }
-        } finally {
-            cursor.close();
         }
 
         return tasksForDate;
@@ -94,15 +91,12 @@ public class TasksBank {
 
         List<SingleTask> tasks = new ArrayList<>();
 
-        SingleTaskCursorWrapper cursor = queryTasks(null, null);
-        try {
+        try (SingleTaskCursorWrapper cursor = queryTasks(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 tasks.add(cursor.getSingleTask());
                 cursor.moveToNext();
             }
-        } finally {
-            cursor.close();
         }
 
         return tasks;
@@ -133,7 +127,6 @@ public class TasksBank {
                 null,
                 null
         );
-
         return new SingleTaskCursorWrapper(cursor);
     }
 

@@ -2,7 +2,6 @@ package com.ptmprojects.quicktickcalendar;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -65,34 +64,31 @@ public class DateAndTimePickerForAlarmFragment extends DialogFragment {
                 .setView(v)
                 .setTitle(R.string.set_alarm_for_task)
                 .setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                int year = mDatePickerForAlarm.getYear();
-                                int month = mDatePickerForAlarm.getMonth();
-                                int day = mDatePickerForAlarm.getDayOfMonth();
-                                int hour;
-                                int minute;
-                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                                    hour = mTimePickerForAlarm.getHour();
-                                    minute = mTimePickerForAlarm.getMinute();
-                                } else {
-                                    hour = mTimePickerForAlarm.getCurrentHour();
-                                    minute = mTimePickerForAlarm.getCurrentMinute();
-                                }
-                                Date date = new GregorianCalendar(year, month, day).getTime();
-                                LocalDate localDate = LocalDate.fromDateFields(date);
-                                LocalDateTime localDateTime = new LocalDateTime(
-                                        localDate.getYear(),
-                                        localDate.getMonthOfYear(),
-                                        localDate.getDayOfMonth(),
-                                        hour,
-                                        minute,
-                                        0,
-                                        0
-                                );
-                                sendResult(Activity.RESULT_OK, localDateTime);
+                        (dialog, which) -> {
+                            int year1 = mDatePickerForAlarm.getYear();
+                            int month1 = mDatePickerForAlarm.getMonth();
+                            int day1 = mDatePickerForAlarm.getDayOfMonth();
+                            int hour1;
+                            int minute1;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                hour1 = mTimePickerForAlarm.getHour();
+                                minute1 = mTimePickerForAlarm.getMinute();
+                            } else {
+                                hour1 = mTimePickerForAlarm.getCurrentHour();
+                                minute1 = mTimePickerForAlarm.getCurrentMinute();
                             }
+                            Date date = new GregorianCalendar(year1, month1, day1).getTime();
+                            LocalDate localDate = LocalDate.fromDateFields(date);
+                            LocalDateTime localDateTime = new LocalDateTime(
+                                    localDate.getYear(),
+                                    localDate.getMonthOfYear(),
+                                    localDate.getDayOfMonth(),
+                                    hour1,
+                                    minute1,
+                                    0,
+                                    0
+                            );
+                            sendResult(Activity.RESULT_OK, localDateTime);
                         })
                 .create();
     }
