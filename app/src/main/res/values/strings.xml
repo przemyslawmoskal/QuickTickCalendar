@@ -29,4 +29,6 @@
     <string name="add_details">Show more details</string>
     <string name="set_date">Choose date:</string>
     <string name="set_alarm_for_task">Set alarm for a task:</string>
+    <string name="channel_name">CHANNEL NAME</string>
+    <string name="channel_description">CHANNEL DESCRIPTION</string>
 </resources>

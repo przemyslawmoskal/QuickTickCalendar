@@ -18,6 +18,10 @@
         <activity
             android:name=".AllTasksByDateActivity">
         </activity>
+
+        <service
+            android:name=".NotificationJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

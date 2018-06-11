@@ -10,12 +10,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:calendarViewShown="false"
-        android:datePickerMode="spinner"></DatePicker>
+        android:datePickerMode="spinner" />
 
     <TimePicker
         android:id="@+id/dialog_time_picker_for_alarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:timePickerMode="spinner"></TimePicker>
+        android:timePickerMode="spinner" />
 </LinearLayout>
