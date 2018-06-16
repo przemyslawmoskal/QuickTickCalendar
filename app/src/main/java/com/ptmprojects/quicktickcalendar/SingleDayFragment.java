@@ -1,6 +1,10 @@
 package com.ptmprojects.quicktickcalendar;
 
 import android.app.Activity;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +27,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 
@@ -130,12 +138,52 @@ public class SingleDayFragment extends Fragment {
             newTask.setDescription(description);
             newTask.setAlarmDetails(alarmString);
             TasksBank.get(getContext()).addTask(newTask);
+
             int size;
             if (TasksBank.get(getActivity()).getTasksForDate(date) == null) {
                 size = -1;
             } else {
                 size = TasksBank.get(getActivity()).getTasksForDate(date).size();
             }
+
+
+            Log.d(TAG, "---------------- IN ONACTIVITYRESULT");
+
+            // there should be new ID for each notficiation:
+
+            if (newTask.getAlarmDetails() != null && !getString(R.string.set_alarm).equals(newTask.getAlarmDetails())) {
+                int JOB_ID = 1;
+                JobScheduler scheduler = (JobScheduler) getContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                boolean hasBeenScheduled = false;
+                for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
+                    if (jobInfo.getId() == JOB_ID) {
+                        hasBeenScheduled = true;
+                    }
+                }
+                DateTimeFormatter formatterForDateAndTime = DateTimeFormat.forPattern("YYYY-MM-dd', 'HH':'mm");
+                try {
+                    LocalDateTime dateAndTimeForAlarm = formatterForDateAndTime.parseLocalDateTime(newTask.getAlarmDetails().toString());
+                    DateTimeZone zone = DateTimeZone.getDefault();
+                    long millisOfAlarm = dateAndTimeForAlarm.toDateTime().getMillis();
+                    if (!hasBeenScheduled) {
+                        JobInfo jobInfo = new JobInfo.Builder(JOB_ID, new ComponentName(getContext(), NotificationJobService.class))
+                                .setMinimumLatency(millisOfAlarm - System.currentTimeMillis())
+                                .setOverrideDeadline(millisOfAlarm + 1000 * 60)
+                                .setPersisted(true)
+                                .build();
+                        scheduler.schedule(jobInfo);
+                    }
+                } catch (IllegalArgumentException iae) {
+                    Toast.makeText(getContext(), "No time set for alarm", Toast.LENGTH_SHORT).show();
+                }
+                JOB_ID++;
+
+
+            }
+
+
+            //
+
             Toast.makeText(getContext(), date.toString() + " " + title + " " + description + ", list size: " + size, Toast.LENGTH_SHORT)
                     .show();
 

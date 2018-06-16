@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ptmprojects.quicktickcalendar">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -21,6 +23,7 @@
 
         <service
             android:name=".NotificationJobService"
+            android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 

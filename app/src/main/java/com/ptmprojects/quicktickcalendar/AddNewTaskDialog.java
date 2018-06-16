@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +45,8 @@ public class AddNewTaskDialog extends DialogFragment {
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.add_new_task_dialog, null);
         mTitleEditText = (EditText) v.findViewById(R.id.task_title_edit_text);
+
+
         mDescriptionEditText = (EditText) v.findViewById(R.id.task_description_edit_text);
         mDateButton = (Button) v.findViewById(R.id.set_date_button);
         mDateButton.setOnClickListener(v1 -> {
@@ -60,7 +64,6 @@ public class AddNewTaskDialog extends DialogFragment {
             dialog.setTargetFragment(AddNewTaskDialog.this, REQUEST_DATE_AND_TIME_FROM_DATE_AND_TIME_PICKER);
             dialog.show(manager, DATE_AND_TIME_PICKER_DIALOG);
         });
-
 
 
         mLocationButton = (Button) v.findViewById(R.id.set_location_button);
@@ -82,12 +85,62 @@ public class AddNewTaskDialog extends DialogFragment {
                             description,
                             alarm,
                             location);
+
                 })
                 .setNegativeButton(R.string.cancel_button, (dialog, id) -> {
 //                        LoginDialogFragment.this.getDialog().cancel();
                 });
 
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialog1 -> {
+            ((AlertDialog) dialog1).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+            mTitleEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (!("".equals(mTitleEditText.getText().toString())) && !getString(R.string.set_date).equals(mDateButton.getText())) {
+                        ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                    } else {
+                        ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    }
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+
+            mDateButton.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (!("".equals(mTitleEditText.getText().toString())) && !getString(R.string.set_date).equals(mDateButton.getText())) {
+                        ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                    } else {
+                        ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    }
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+        });
+
+
+        return dialog;
     }
 
     @Override

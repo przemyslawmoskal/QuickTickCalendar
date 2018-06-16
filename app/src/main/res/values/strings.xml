@@ -12,7 +12,7 @@
     <string name="task_title_label">Task title:</string>
     <string name="task_description_label">Task description</string>
     <string name="task_date_label">Choose date:</string>
-    <string name="task_title_hint">Enter short task title here</string>
+    <string name="task_title_hint">Enter short task title here (required)</string>
     <string name="task_description_hint">Enter task description here</string>
     <string name="choose_date_label">Choose date:</string>
     <string name="ok_button">OK</string>
@@ -27,7 +27,7 @@
     <string name="set_alarm">Set alarm...</string>
     <string name="set_location">Set location...</string>
     <string name="add_details">Show more details</string>
-    <string name="set_date">Choose date:</string>
+    <string name="set_date">Choose date... (required)</string>
     <string name="set_alarm_for_task">Set alarm for a task:</string>
     <string name="channel_name">CHANNEL NAME</string>
     <string name="channel_description">CHANNEL DESCRIPTION</string>
