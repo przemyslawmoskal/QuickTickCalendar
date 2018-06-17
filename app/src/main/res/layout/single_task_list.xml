@@ -88,15 +88,13 @@
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_alarm" />
 
-            <EditText
+            <Button
                 android:id="@+id/alarm_details"
                 android:hint="@string/set_alarm"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="16dp"
-                android:background="@android:color/transparent" />
+                android:layout_marginStart="16dp" />
         </LinearLayout>
 
         <LinearLayout

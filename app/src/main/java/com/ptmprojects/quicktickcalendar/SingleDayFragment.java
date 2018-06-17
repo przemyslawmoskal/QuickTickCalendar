@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -39,6 +40,8 @@ public class SingleDayFragment extends Fragment {
     private static final String TAG = "SingleDayFragment";
     private static final String DIALOG_NEW_TASK = "DialogNewTask";
     private static final int REQUEST_DATA_FROM_DIALOG = 0;
+    public static final String KEY_TITLE = "Task title";
+    public static final String KEY_DESCRIPTION = "Task description";
     private static final String KEY_DATE = "date";
     private RecyclerView mTaskRecyclerView;
     private TaskAdapter mAdapter;
@@ -151,7 +154,7 @@ public class SingleDayFragment extends Fragment {
 
             // there should be new ID for each notficiation:
 
-            if (newTask.getAlarmDetails() != null && !getString(R.string.set_alarm).equals(newTask.getAlarmDetails())) {
+            if (newTask.getAlarmDetails() != null && !getString(R.string.set_alarm).equals(newTask.getAlarmDetails().toString())) {
                 int JOB_ID = 1;
                 JobScheduler scheduler = (JobScheduler) getContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
                 boolean hasBeenScheduled = false;
@@ -166,9 +169,13 @@ public class SingleDayFragment extends Fragment {
                     DateTimeZone zone = DateTimeZone.getDefault();
                     long millisOfAlarm = dateAndTimeForAlarm.toDateTime().getMillis();
                     if (!hasBeenScheduled) {
+                        PersistableBundle bundle = new PersistableBundle();
+                        bundle.putString(KEY_TITLE, newTask.getTitle().toString());
+                        bundle.putString(KEY_DESCRIPTION, newTask.getDescription().toString());
                         JobInfo jobInfo = new JobInfo.Builder(JOB_ID, new ComponentName(getContext(), NotificationJobService.class))
                                 .setMinimumLatency(millisOfAlarm - System.currentTimeMillis())
                                 .setOverrideDeadline(millisOfAlarm + 1000 * 60)
+                                .setExtras(bundle)
                                 .setPersisted(true)
                                 .build();
                         scheduler.schedule(jobInfo);
@@ -218,7 +225,7 @@ public class SingleDayFragment extends Fragment {
         private ImageButton mDeleteButton;
         private LinearLayout details;
         private EditText mDescriptionDetails;
-        private EditText mAlarmDetails;
+        private Button mAlarmDetails;
         private EditText mLocationDetails;
         private Button mAddDetailsButton;
         private LinearLayout mSetDescriptionWholeLayout;
@@ -235,7 +242,7 @@ public class SingleDayFragment extends Fragment {
             mDeleteButton = (ImageButton) itemView.findViewById(R.id.delete_button);
             details = (LinearLayout) itemView.findViewById(R.id.details);
             mDescriptionDetails = (EditText) itemView.findViewById(R.id.description_details);
-            mAlarmDetails = (EditText) itemView.findViewById(R.id.alarm_details);
+            mAlarmDetails = (Button) itemView.findViewById(R.id.alarm_details);
             mLocationDetails = (EditText) itemView.findViewById(R.id.location_details);
             mAddDetailsButton = (Button) itemView.findViewById(R.id.add_details_button);
             mSetDescriptionWholeLayout = (LinearLayout) itemView.findViewById(R.id.set_description_whole_layout);
@@ -253,7 +260,7 @@ public class SingleDayFragment extends Fragment {
             mDeleteButton = (ImageButton) itemView.findViewById(R.id.delete_button);
             details = (LinearLayout) itemView.findViewById(R.id.details);
             mDescriptionDetails = (EditText) itemView.findViewById(R.id.description_details);
-            mAlarmDetails = (EditText) itemView.findViewById(R.id.alarm_details);
+            mAlarmDetails = (Button) itemView.findViewById(R.id.alarm_details);
             mLocationDetails = (EditText) itemView.findViewById(R.id.location_details);
             mAddDetailsButton = (Button) itemView.findViewById(R.id.add_details_button);
             mSetDescriptionWholeLayout = (LinearLayout) itemView.findViewById(R.id.set_description_whole_layout);
@@ -283,14 +290,14 @@ public class SingleDayFragment extends Fragment {
                 updateUI();
             });
 
-            if (((task.getDescription() != null) && (!"".equals(task.getDescription())))
-                    && ((task.getLocationDetails() != null) && (!"".equals(task.getLocationDetails())))
-                    && ((task.getAlarmDetails() != null) && (!"".equals(task.getAlarmDetails())))) {
+            if (((task.getDescription() != null) && (!"".equals(task.getDescription().toString())))
+                    && ((task.getLocationDetails() != null) && (!"".equals(task.getLocationDetails().toString())))
+                    && ((task.getAlarmDetails() != null) && (!"".equals(task.getAlarmDetails().toString())))) {
                 mAddDetailsWholeLayout.setVisibility(View.GONE);
             } else {
                 mAddDetailsWholeLayout.setVisibility(View.VISIBLE);
             }
-            if (task.getDescription() != null && !"".equals(task.getAlarmDetails())) {
+            if (task.getDescription() != null && !"".equals(task.getDescription().toString())) {
                 mSetDescriptionWholeLayout.setVisibility(View.VISIBLE);
                 mDescriptionDetails.setText(task.getDescription());
             } else {
@@ -303,7 +310,7 @@ public class SingleDayFragment extends Fragment {
                     task.setDescription(mDescriptionDetails.getText().toString());
                 }
             });
-            if (task.getLocationDetails() != null && !"".equals(task.getLocationDetails())) {
+            if (task.getLocationDetails() != null && !"".equals(task.getLocationDetails().toString())) {
                 mSetLocationWholeLayout.setVisibility(View.VISIBLE);
                 mLocationDetails.setText(task.getLocationDetails());
             } else {
@@ -316,19 +323,23 @@ public class SingleDayFragment extends Fragment {
                     task.setLocationDetails(mLocationDetails.getText().toString());
                 }
             });
-            if (task.getAlarmDetails() != null && !"".equals(task.getAlarmDetails())) {
+            if (task.getAlarmDetails() != null && !getString(R.string.set_alarm).equals(task.getAlarmDetails().toString())) {
                 mSetAlarmWholeLayout.setVisibility(View.VISIBLE);
                 mAlarmDetails.setText(task.getAlarmDetails());
             } else {
-                mAlarmDetails.setText("");
+                mAlarmDetails.setText(getString(R.string.set_alarm));
                 task.setAlarmDetails(null);
                 mSetAlarmWholeLayout.setVisibility(View.GONE);
             }
-            mAlarmDetails.setOnFocusChangeListener((v, hasFocus) -> {
-                if (!hasFocus) {
-                    task.setAlarmDetails(mAlarmDetails.getText().toString());
-                }
-            });
+
+            // Rather not needed since Button is used for alarm instead of EditText
+//            mAlarmDetails.setOnFocusChangeListener((v, hasFocus) -> {
+//                if (!hasFocus) {
+//                    task.setAlarmDetails(mAlarmDetails.getText().toString());
+//                }
+//            });
+
+
 
             mAddDetailsButton.setOnClickListener(v -> {
                 mSetDescriptionWholeLayout.setVisibility(View.VISIBLE);

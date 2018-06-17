@@ -24,7 +24,7 @@
     <string name="day_before_yesterday">DAY BEFORE YESTERDAY</string>
     <string name="tomorrow">TOMORROW</string>
     <string name="day_after_tomorrow">DAY AFTER TOMORROW</string>
-    <string name="set_alarm">Set alarm...</string>
+    <string name="set_alarm">SET ALARM...</string>
     <string name="set_location">Set location...</string>
     <string name="add_details">Show more details</string>
     <string name="set_date">Choose date... (required)</string>

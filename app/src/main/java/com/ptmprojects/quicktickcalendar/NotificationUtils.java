@@ -50,7 +50,7 @@ public class NotificationUtils extends ContextWrapper {
         return new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(android.R.drawable.stat_notify_more)
+                .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
                 .setAutoCancel(true);
     }
 
