@@ -3,6 +3,7 @@ package com.ptmprojects.quicktickcalendar;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Color;
@@ -46,12 +47,14 @@ public class NotificationUtils extends ContextWrapper {
         return mManager;
     }
 
-    public NotificationCompat.Builder getAndroidChannelNotification(String title, String body) {
+    public NotificationCompat.Builder getAndroidChannelNotification(String title, String body, PendingIntent pendingIntent) {
         return new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
+
     }
 
 }

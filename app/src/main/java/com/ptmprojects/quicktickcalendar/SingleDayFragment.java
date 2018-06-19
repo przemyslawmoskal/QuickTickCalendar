@@ -42,6 +42,7 @@ public class SingleDayFragment extends Fragment {
     private static final int REQUEST_DATA_FROM_DIALOG = 0;
     public static final String KEY_TITLE = "Task title";
     public static final String KEY_DESCRIPTION = "Task description";
+    public static final String KEY_DATE_FOR_NOTIFICATION = "Task date for notification";
     private static final String KEY_DATE = "date";
     private RecyclerView mTaskRecyclerView;
     private TaskAdapter mAdapter;
@@ -172,6 +173,7 @@ public class SingleDayFragment extends Fragment {
                         PersistableBundle bundle = new PersistableBundle();
                         bundle.putString(KEY_TITLE, newTask.getTitle().toString());
                         bundle.putString(KEY_DESCRIPTION, newTask.getDescription().toString());
+                        bundle.putString(KEY_DATE_FOR_NOTIFICATION, newTask.getDate().toString());
                         JobInfo jobInfo = new JobInfo.Builder(JOB_ID, new ComponentName(getContext(), NotificationJobService.class))
                                 .setMinimumLatency(millisOfAlarm - System.currentTimeMillis())
                                 .setOverrideDeadline(millisOfAlarm + 1000 * 60)

@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private Map<Integer, String> mFragmentsTags;
     private String dateString;
     DateTimeFormatter mDateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
-//    private NotificationUtils mNotificationUtils;
 
     public ViewPager getVpPager() {
         return vpPager;
@@ -79,16 +78,6 @@ public class MainActivity extends AppCompatActivity {
             LocalDate dateToSet = new LocalDate(dateString);
             vpPager.setCurrentItem(TimeUtils.getPositionForDay(dateToSet));
         }
-
-        // Example of performing a notification:
-//            mNotificationUtils = new NotificationUtils(this);
-//            NotificationCompat.Builder nb = mNotificationUtils.
-//                    getAndroidChannelNotification("TITLE ", "By " + "AUTHOR");
-//
-//            mNotificationUtils.getManager().notify(101, nb.build());
-
-
-
     }
 
     private class MyPagerAdapter extends FragmentStatePagerAdapter {
