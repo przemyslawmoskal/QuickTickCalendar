@@ -1,4 +1,4 @@
-package com.ptmprojects.quicktickcalendar;
+package com.ptmprojects.quicktickcalendar.notifications;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

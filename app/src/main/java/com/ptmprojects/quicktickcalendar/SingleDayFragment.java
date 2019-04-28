@@ -28,6 +28,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.ptmprojects.quicktickcalendar.notifications.NotificationJobService;
+
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -35,15 +37,19 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
+import java.util.UUID;
 
 public class SingleDayFragment extends Fragment {
     private static final String TAG = "SingleDayFragment";
     private static final String DIALOG_NEW_TASK = "DialogNewTask";
     private static final int REQUEST_DATA_FROM_DIALOG = 0;
+    public static final int REQUEST_DETAILS_FOR_NOTIFICATION = 1;
+    public static final String NOTIFICATION_DETAILS_DIALOG = "DateAndTimePickerDialog from SingleDayFragment";
     public static final String KEY_TITLE = "Task title";
     public static final String KEY_DESCRIPTION = "Task description";
     public static final String KEY_DATE_FOR_NOTIFICATION = "Task date for notification";
     private static final String KEY_DATE = "date";
+    private static final int POSITION_TO_UPDATE = -1;
     private RecyclerView mTaskRecyclerView;
     private TaskAdapter mAdapter;
     private LocalDate date;
@@ -58,7 +64,7 @@ public class SingleDayFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.i(TAG, "SingleDayFragment.onCreate()");
+        Log.d(TAG, "SingleDayFragment.onCreate()");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
@@ -69,7 +75,7 @@ public class SingleDayFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.i(TAG, "SingleDayFragment.onCreateView()");
+        Log.d(TAG, "SingleDayFragment.onCreateView()");
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_single_day, container, false);
         mTaskRecyclerView = (RecyclerView) view.findViewById(R.id.single_day_recycler_view);
         mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -80,7 +86,7 @@ public class SingleDayFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.i(TAG, "SingleDayFragment.onCreateOptionsMenu()");
+        Log.d(TAG, "SingleDayFragment.onCreateOptionsMenu()");
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.action_bar_menu, menu);
     }
@@ -88,7 +94,7 @@ public class SingleDayFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i(TAG, "SingleDayFragment.onResume()");
+        Log.d(TAG, "SingleDayFragment.onResume()");
         TasksBank tasksBank;
         if (getActivity() != null) {
             tasksBank = TasksBank.get(getActivity());
@@ -106,7 +112,7 @@ public class SingleDayFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, "SingleDayFragment.onOptionsItemSelected()");
+        Log.d(TAG, "SingleDayFragment.onOptionsItemSelected()");
         switch (item.getItemId()) {
             case R.id.add_task_item: {
                 FragmentManager fragmentManager = getFragmentManager();
@@ -128,11 +134,10 @@ public class SingleDayFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG, "SingleDayFragment.onActivityResult()");
+        Log.d(TAG, "SingleDayFragment.onActivityResult()");
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-
         if (requestCode == REQUEST_DATA_FROM_DIALOG) {
             LocalDate date = (LocalDate) data.getSerializableExtra(AddNewTaskDialog.EXTRA_DATE);
             String title = (String) data.getSerializableExtra(AddNewTaskDialog.EXTRA_TITLE);
@@ -153,7 +158,7 @@ public class SingleDayFragment extends Fragment {
 
             Log.d(TAG, "---------------- IN ONACTIVITYRESULT");
 
-            // there should be new ID for each notficiation:
+            // there should be new ID for each notification:
 
             if (newTask.getAlarmDetails() != null && !getString(R.string.set_alarm).equals(newTask.getAlarmDetails().toString())) {
                 int JOB_ID = 1;
@@ -202,10 +207,26 @@ public class SingleDayFragment extends Fragment {
             ((MainActivity) getActivity()).getVpPager().getAdapter().notifyDataSetChanged();
             mTaskRecyclerView.invalidate();
         }
+
+        if (requestCode == REQUEST_DETAILS_FOR_NOTIFICATION) {
+            LocalDateTime dateTime = (LocalDateTime) data.getSerializableExtra(DateAndTimePickerForAlarmFragment.EXTRA_DATE_AND_TIME_FROM_DIALOG_FOR_ALARM);
+            Log.d("Date + time", dateTime.toString());
+            UUID uuidOfTaskToUpdate = (UUID) data.getSerializableExtra(DateAndTimePickerForAlarmFragment.ARG_UUID_OF_TASK_TO_CHANGE);
+
+            Log.d("/// REQ DETAILS NOTIF", uuidOfTaskToUpdate.toString());
+            SingleTask taskToUpdate = TasksBank.get(getContext()).findTaskByUUID(uuidOfTaskToUpdate);
+            taskToUpdate.setAlarmDetails(AddNewTaskDialog.formatterForDateAndTime.print(dateTime));
+            TasksBank.get(getContext()).updateTask(taskToUpdate);
+
+
+            //Should be notify item changed!
+            mTaskRecyclerView.getAdapter().notifyDataSetChanged();
+            updateUI();
+        }
     }
 
     private void updateUI() {
-        Log.i(TAG, "SingleDayFragment.updateUI()");
+        Log.d(TAG, "SingleDayFragment.updateUI()");
         TasksBank tasksBank = TasksBank.get(getActivity());
         List<SingleTask> tasksForSingleDay = tasksBank.getTasksForDate(date);
 
@@ -334,14 +355,22 @@ public class SingleDayFragment extends Fragment {
                 mSetAlarmWholeLayout.setVisibility(View.GONE);
             }
 
-            // Rather not needed since Button is used for alarm instead of EditText
-//            mAlarmDetails.setOnFocusChangeListener((v, hasFocus) -> {
-//                if (!hasFocus) {
-//                    task.setAlarmDetails(mAlarmDetails.getText().toString());
-//                }
-//            });
+            ///
 
 
+            mAlarmDetails.setOnClickListener((v) -> {
+                FragmentManager manager = getFragmentManager();
+                DateAndTimePickerForAlarmFragment dialog = DateAndTimePickerForAlarmFragment
+                        .newInstance(new LocalDateTime(), task.getId());
+                dialog.setTargetFragment(SingleDayFragment.this, REQUEST_DETAILS_FOR_NOTIFICATION);
+                dialog.show(manager, NOTIFICATION_DETAILS_DIALOG);
+            });
+
+
+
+
+
+            ///
 
             mAddDetailsButton.setOnClickListener(v -> {
                 mSetDescriptionWholeLayout.setVisibility(View.VISIBLE);

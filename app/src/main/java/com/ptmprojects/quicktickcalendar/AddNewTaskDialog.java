@@ -33,11 +33,11 @@ public class AddNewTaskDialog extends DialogFragment {
     public static final String EXTRA_LOCATION = "ptmprojects.com.quicktickcalendar.location";
     private static final String DATE_PICKER_DIALOG = "DatePickerDialog";
     private static final String DATE_AND_TIME_PICKER_DIALOG = "DateAndTimePickerDialog";
-    private static final int REQUEST_DATE_FROM_DATE_PICKER = 0;
-    private static final int REQUEST_DATE_AND_TIME_FROM_DATE_AND_TIME_PICKER = 1;
+    private static final int REQUEST_DATE_OF_TASK = 0;
+    private static final int REQUEST_DATE_AND_TIME_FOR_NOTIFICATION = 1;
 
-    DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
-    DateTimeFormatter formatterForDateAndTime = DateTimeFormat.forPattern("YYYY-MM-dd', 'HH':'mm");
+    public static DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
+    public static DateTimeFormatter formatterForDateAndTime = DateTimeFormat.forPattern("YYYY-MM-dd', 'HH':'mm");
 
     @NonNull
     @Override
@@ -53,7 +53,7 @@ public class AddNewTaskDialog extends DialogFragment {
             FragmentManager manager = getFragmentManager();
             DatePickerFragment dialog = DatePickerFragment
                     .newInstance(new LocalDate());
-            dialog.setTargetFragment(AddNewTaskDialog.this, REQUEST_DATE_FROM_DATE_PICKER);
+            dialog.setTargetFragment(AddNewTaskDialog.this, REQUEST_DATE_OF_TASK);
             dialog.show(manager, DATE_PICKER_DIALOG);
         });
         mAlarmButton = (Button) v.findViewById(R.id.set_alarm_button);
@@ -61,7 +61,7 @@ public class AddNewTaskDialog extends DialogFragment {
             FragmentManager manager = getFragmentManager();
             DateAndTimePickerForAlarmFragment dialog = DateAndTimePickerForAlarmFragment
                     .newInstance(new LocalDateTime());
-            dialog.setTargetFragment(AddNewTaskDialog.this, REQUEST_DATE_AND_TIME_FROM_DATE_AND_TIME_PICKER);
+            dialog.setTargetFragment(AddNewTaskDialog.this, REQUEST_DATE_AND_TIME_FOR_NOTIFICATION);
             dialog.show(manager, DATE_AND_TIME_PICKER_DIALOG);
         });
 
@@ -148,11 +148,11 @@ public class AddNewTaskDialog extends DialogFragment {
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        if (requestCode == REQUEST_DATE_FROM_DATE_PICKER) {
+        if (requestCode == REQUEST_DATE_OF_TASK) {
             LocalDate date = (LocalDate) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE_FROM_DATE_PICKER);
             mDateButton.setText(formatter.print(date));
         }
-        if (requestCode == REQUEST_DATE_AND_TIME_FROM_DATE_AND_TIME_PICKER) {
+        if (requestCode == REQUEST_DATE_AND_TIME_FOR_NOTIFICATION) {
             LocalDateTime dateTime = (LocalDateTime) data.getSerializableExtra(DateAndTimePickerForAlarmFragment.EXTRA_DATE_AND_TIME_FROM_DIALOG_FOR_ALARM);
             mAlarmButton.setText(formatterForDateAndTime.print(dateTime));
         }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
@@ -18,10 +19,13 @@ import org.joda.time.LocalDateTime;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 
 public class DateAndTimePickerForAlarmFragment extends DialogFragment {
     public static final String EXTRA_DATE_AND_TIME_FROM_DIALOG_FOR_ALARM = "ptmprojects.com.quicktickcalendar.dateForAlarm";
+    public static final String EXTRA_UUID_OF_TASK_TO_CHANGE = "uuid of task to change";
     private static final String ARG_DATE_AND_TIME = "date and time";
+    public static final String ARG_UUID_OF_TASK_TO_CHANGE = "uuid of task to change";
     private DatePicker mDatePickerForAlarm;
     private TimePicker mTimePickerForAlarm;
 
@@ -34,10 +38,23 @@ public class DateAndTimePickerForAlarmFragment extends DialogFragment {
         return fragment;
     }
 
+    public static DateAndTimePickerForAlarmFragment newInstance(LocalDateTime dateAndTime, UUID idOfTaskToChange ) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_DATE_AND_TIME, dateAndTime);
+        args.putSerializable(ARG_UUID_OF_TASK_TO_CHANGE, idOfTaskToChange);
+        Log.d(" ///// ID TO CHANGE ///", idOfTaskToChange.toString());
+
+
+        DateAndTimePickerForAlarmFragment fragment = new DateAndTimePickerForAlarmFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LocalDateTime dateAndTime = (LocalDateTime) getArguments().getSerializable(ARG_DATE_AND_TIME);
+        UUID uuid = (UUID) getArguments().getSerializable(ARG_UUID_OF_TASK_TO_CHANGE);
         int year = dateAndTime.getYear();
         int month = dateAndTime.getMonthOfYear() - 1;
         int day = dateAndTime.getDayOfMonth();
@@ -88,7 +105,12 @@ public class DateAndTimePickerForAlarmFragment extends DialogFragment {
                                     0,
                                     0
                             );
-                            sendResult(Activity.RESULT_OK, localDateTime);
+                            if (uuid == null) {
+                                sendResult(Activity.RESULT_OK, localDateTime);
+                            } else {
+                                sendResult(Activity.RESULT_OK, localDateTime, uuid);
+                            }
+
                         })
                 .create();
     }
@@ -100,6 +122,19 @@ public class DateAndTimePickerForAlarmFragment extends DialogFragment {
 
         Intent intent = new Intent();
         intent.putExtra(EXTRA_DATE_AND_TIME_FROM_DIALOG_FOR_ALARM, dateAndTime);
+
+        getTargetFragment()
+                .onActivityResult(getTargetRequestCode(), resultCode, intent);
+    }
+
+    private void sendResult(int resultCode, LocalDateTime dateAndTime, UUID uuidOfTaskToChange) {
+        if (getTargetFragment() == null) {
+            return;
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_DATE_AND_TIME_FROM_DIALOG_FOR_ALARM, dateAndTime);
+        intent.putExtra(EXTRA_UUID_OF_TASK_TO_CHANGE, uuidOfTaskToChange);
 
         getTargetFragment()
                 .onActivityResult(getTargetRequestCode(), resultCode, intent);

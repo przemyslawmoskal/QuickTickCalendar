@@ -13,6 +13,7 @@ import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TasksBank {
 
@@ -87,6 +88,17 @@ public class TasksBank {
         return tasksForDate;
     }
 
+    public SingleTask findTaskByUUID(UUID uuid) {
+        try (SingleTaskCursorWrapper cursor = queryTasks(SingleTaskDbSchema.SingleTaskTable.Cols.UUID + " = ?",
+                new String[]{uuid.toString()})) {
+            cursor.moveToFirst();
+            return cursor.getSingleTask();
+        }
+    }
+
+
+
+
     public List<SingleTask> getAllTasksList() {
 
         List<SingleTask> tasks = new ArrayList<>();
@@ -135,4 +147,5 @@ public class TasksBank {
                 new String[]{task.getId().toString()});
         return true;
     }
+
 }

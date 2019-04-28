@@ -1,4 +1,4 @@
-package com.ptmprojects.quicktickcalendar;
+package com.ptmprojects.quicktickcalendar.notifications;
 
 import android.app.PendingIntent;
 import android.app.job.JobParameters;
@@ -6,6 +6,10 @@ import android.app.job.JobService;
 import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.v4.app.NotificationCompat;
+
+import com.ptmprojects.quicktickcalendar.MainActivity;
+import com.ptmprojects.quicktickcalendar.SingleDayFragment;
+import com.ptmprojects.quicktickcalendar.notifications.NotificationUtils;
 
 public class NotificationJobService extends JobService {
     private NotificationUtils mNotificationUtils;
