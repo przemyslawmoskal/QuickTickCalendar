@@ -294,7 +294,26 @@ public class SingleDayFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(), mSingleTask.getTitle() + " klik!", Toast.LENGTH_SHORT).show();
+            switch (v.getId()) {
+                case R.id.delete_button:
+                    TasksBank.get(getContext()).deleteTask(mSingleTask);
+                    mTaskRecyclerView.getAdapter().notifyDataSetChanged();
+                    updateUI();
+
+                case R.id.alarm_details:
+                    FragmentManager manager = getFragmentManager();
+                    DateAndTimePickerForAlarmFragment dialog = DateAndTimePickerForAlarmFragment
+                            .newInstance(new LocalDateTime(), mSingleTask.getId());
+                    dialog.setTargetFragment(SingleDayFragment.this, REQUEST_DETAILS_FOR_NOTIFICATION);
+                    dialog.show(manager, NOTIFICATION_DETAILS_DIALOG);
+
+                case R.id.add_details_button:
+                    mSetDescriptionWholeLayout.setVisibility(View.VISIBLE);
+                    mSetLocationWholeLayout.setVisibility(View.VISIBLE);
+                    mSetAlarmWholeLayout.setVisibility(View.VISIBLE);
+                    // Add details button disappears when all details shown:
+                    mAddDetailsWholeLayout.setVisibility(View.GONE);
+            }
         }
 
         public void bind(SingleTask task) {
@@ -307,11 +326,7 @@ public class SingleDayFragment extends Fragment {
             });
 
             mIsCompletedCheckBox.setChecked(task.isDone());
-            mDeleteButton.setOnClickListener((a) -> {
-                TasksBank.get(getContext()).deleteTask(task);
-                mTaskRecyclerView.getAdapter().notifyDataSetChanged();
-                updateUI();
-            });
+            mDeleteButton.setOnClickListener(this);
 
             if (((task.getDescription() != null) && (!"".equals(task.getDescription().toString())))
                     && ((task.getLocationDetails() != null) && (!"".equals(task.getLocationDetails().toString())))
@@ -355,30 +370,8 @@ public class SingleDayFragment extends Fragment {
                 mSetAlarmWholeLayout.setVisibility(View.GONE);
             }
 
-            ///
-
-
-            mAlarmDetails.setOnClickListener((v) -> {
-                FragmentManager manager = getFragmentManager();
-                DateAndTimePickerForAlarmFragment dialog = DateAndTimePickerForAlarmFragment
-                        .newInstance(new LocalDateTime(), task.getId());
-                dialog.setTargetFragment(SingleDayFragment.this, REQUEST_DETAILS_FOR_NOTIFICATION);
-                dialog.show(manager, NOTIFICATION_DETAILS_DIALOG);
-            });
-
-
-
-
-
-            ///
-
-            mAddDetailsButton.setOnClickListener(v -> {
-                mSetDescriptionWholeLayout.setVisibility(View.VISIBLE);
-                mSetLocationWholeLayout.setVisibility(View.VISIBLE);
-                mSetAlarmWholeLayout.setVisibility(View.VISIBLE);
-                // Add details button disappears when all details shown:
-                mAddDetailsWholeLayout.setVisibility(View.GONE);
-            });
+            mAlarmDetails.setOnClickListener(this);
+            mAddDetailsButton.setOnClickListener(this);
         }
     }
 
